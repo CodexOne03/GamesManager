@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Configuration));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -44,6 +45,10 @@
             this.removeIgnoredButton = new System.Windows.Forms.Button();
             this.addIgnoredButton = new System.Windows.Forms.Button();
             this.resetGamesListButton = new System.Windows.Forms.Button();
+            this.steamIDTextBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.steamCheckBox = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -188,17 +193,64 @@
             this.resetGamesListButton.Location = new System.Drawing.Point(127, 348);
             this.resetGamesListButton.MaximumSize = new System.Drawing.Size(0, 23);
             this.resetGamesListButton.Name = "resetGamesListButton";
-            this.resetGamesListButton.Size = new System.Drawing.Size(109, 23);
+            this.resetGamesListButton.Size = new System.Drawing.Size(94, 23);
             this.resetGamesListButton.TabIndex = 14;
             this.resetGamesListButton.Text = "Reset games list";
             this.resetGamesListButton.UseVisualStyleBackColor = true;
             this.resetGamesListButton.Click += new System.EventHandler(this.resetGamesListButton_Click);
+            // 
+            // steamIDTextBox
+            // 
+            this.steamIDTextBox.Enabled = false;
+            this.steamIDTextBox.Location = new System.Drawing.Point(279, 329);
+            this.steamIDTextBox.Name = "steamIDTextBox";
+            this.steamIDTextBox.Size = new System.Drawing.Size(231, 20);
+            this.steamIDTextBox.TabIndex = 16;
+            this.steamIDTextBox.TextChanged += new System.EventHandler(this.steamIDTextBox_TextChanged);
+            this.steamIDTextBox.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.steamIDTextBox_HelpRequested);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Enabled = false;
+            this.label4.Location = new System.Drawing.Point(279, 313);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(54, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Steam ID:";
+            this.label4.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.steamIDTextBox_HelpRequested);
+            // 
+            // steamCheckBox
+            // 
+            this.steamCheckBox.AutoSize = true;
+            this.steamCheckBox.Location = new System.Drawing.Point(279, 293);
+            this.steamCheckBox.Name = "steamCheckBox";
+            this.steamCheckBox.Size = new System.Drawing.Size(76, 17);
+            this.steamCheckBox.TabIndex = 17;
+            this.steamCheckBox.Text = "Use steam";
+            this.steamCheckBox.UseVisualStyleBackColor = true;
+            this.steamCheckBox.CheckedChanged += new System.EventHandler(this.steamCheckBox_CheckedChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.Red;
+            this.label5.Location = new System.Drawing.Point(279, 353);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 13);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Invalid SteamID";
+            this.label5.Visible = false;
             // 
             // Configuration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(588, 383);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.steamCheckBox);
+            this.Controls.Add(this.steamIDTextBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.resetGamesListButton);
             this.Controls.Add(this.removeIgnoredButton);
             this.Controls.Add(this.addIgnoredButton);
@@ -214,6 +266,10 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.HelpButton = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Configuration";
             this.Text = "Configuration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Configuration_FormClosing);
@@ -241,6 +297,10 @@
         private System.Windows.Forms.Button removeIgnoredButton;
         private System.Windows.Forms.Button addIgnoredButton;
         private System.Windows.Forms.Button resetGamesListButton;
+        private System.Windows.Forms.TextBox steamIDTextBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox steamCheckBox;
+        private System.Windows.Forms.Label label5;
     }
 }
 

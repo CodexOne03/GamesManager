@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GamesManager
 {
@@ -63,7 +64,15 @@ namespace GamesManager
             string text = "The following games are about to be added to the program:\n";
             foreach (string file in CreationQueue)
             {
-                text += $"- {file}\n";
+                if (file.StartsWith("{"))
+                {
+                    Game game = JsonConvert.DeserializeObject<Game>(file);
+                    text += $"- {game.Name}\n";
+                }
+                else
+                {
+                    text += $"- {file}\n";
+                }
             }
             text += "Do you want to continue?";
             this.label1.Text = text;
@@ -74,10 +83,19 @@ namespace GamesManager
             do
             {
                 string path = CreationQueue.Dequeue();
-                var info = new FileInfo(path);
-                var gameName = info.Name.Replace(info.Extension, "");
-                SettingsManager.AddGame(new Game(gameName, info.DirectoryName, path));
-                info.CreateShortcut(SettingsManager.GamesFolderPath, gameName, "Created by GamesManager");
+                if (path.StartsWith("{"))
+                {
+                    Game game = JsonConvert.DeserializeObject<Game>(path);
+                    SettingsManager.AddGame(game);
+                    game.CreateUrlFile(SettingsManager.GamesFolderPath);
+                }
+                else
+                {
+                    var info = new FileInfo(path);
+                    var gameName = info.Name.Replace(info.Extension, "");
+                    SettingsManager.AddGame(new Game(gameName, info.DirectoryName, path));
+                    info.CreateShortcut(SettingsManager.GamesFolderPath, gameName, "Created by GamesManager");
+                }
             }
             while (CreationQueue.Count > 0);
             Result = CreateMessageBoxResult.AddAll;
@@ -90,14 +108,26 @@ namespace GamesManager
             do
             {
                 string path = CreationQueue.Dequeue();
-                var dir = new FileInfo(path).DirectoryName;
-                if (SettingsManager.GetIgnoredFolders().ToArray().FirstOrDefault(i => i == dir) == null)
+                if (path.StartsWith("{"))
                 {
-                    var result = AddGameMessageBox.Show(path, this.setNamesCheckBox.Checked);
+                    var result = AddGameMessageBox.Show(path);
                     if (result == AddGameMessageBox.AddGameMessageBoxResult.Cancel)
                     {
                         Result = CreateMessageBoxResult.Cancel;
                         break;
+                    }
+                }
+                else
+                {
+                    var dir = new FileInfo(path).DirectoryName;
+                    if (SettingsManager.GetIgnoredFolders().ToArray().FirstOrDefault(i => i == dir) == null)
+                    {
+                        var result = AddGameMessageBox.Show(path, this.setNamesCheckBox.Checked);
+                        if (result == AddGameMessageBox.AddGameMessageBoxResult.Cancel)
+                        {
+                            Result = CreateMessageBoxResult.Cancel;
+                            break;
+                        }
                     }
                 }
             }

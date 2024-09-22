@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamWebAPI2.Interfaces;
+using SteamWebAPI2.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -147,6 +149,70 @@ namespace GamesManager
         public static bool IsGamesSearchFoldersValid()
         {
             return GetGamesSearchFolders().ToArray().All(i => Directory.Exists(i));
+        }
+
+        public static bool UseSteam
+        {
+            get
+            {
+                return Properties.Settings.Default.useSteam;
+            }
+            set
+            {
+                Properties.Settings.Default.useSteam = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static ulong SteamID
+        {
+            get
+            {
+                return Properties.Settings.Default.steamID;
+            }
+            set
+            {
+                Properties.Settings.Default.steamID = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static string SteamPath
+        {
+            get
+            {
+                return Properties.Settings.Default.steamPath;
+            }
+            set
+            {
+                if (!value.EndsWith("\\"))
+                {
+                    value += "\\";
+                }
+                Properties.Settings.Default.steamPath = value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        public static bool IsSteamIDValid(string steamID)
+        {
+            // Known range of valid SteamID64s
+            ulong minValidSteamId = 76561197960265728;
+            ulong maxValidSteamId = ulong.MaxValue;
+
+            if (ulong.TryParse(steamID, out ulong steamId))
+            {
+                // Check if the parsed SteamID falls within the valid range
+                return steamId >= minValidSteamId && steamId <= maxValidSteamId;
+            }
+
+            // If it can't be parsed as a 64-bit integer, it's invalid
+            return false;
+        }
+
+        public static bool IsSteamIDValid()
+        {
+            return IsSteamIDValid(SteamID.ToString());
         }
 
         public static void Reset()

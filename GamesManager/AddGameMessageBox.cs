@@ -39,6 +39,18 @@ namespace GamesManager
             AddButtons();
         }
 
+        public AddGameMessageBox(string steamGame)
+        {
+            InitializeComponent();
+            this.Game = JsonConvert.DeserializeObject<Game>(steamGame);
+            this.SetCustomName = false;
+            SetText();
+            this.textBox1.Visible = false;
+            this.label2.Visible = false;
+            this.addIgnoreCheckBox.Visible = false;
+            AddButtons();
+        }
+
         private void AddButtons()
         {
             // Initialize buttons
@@ -71,22 +83,36 @@ namespace GamesManager
 
         private void SetText()
         {
-            this.label1.Text = $"Do you want to add the following game to the program?\n- {Game.Executable}";
+            if (SettingsManager.UseSteam && Game.IsSteamGame)
+            {
+                this.label1.Text = $"Do you want to add the following steam game to the program?\n- {Game.Name}";
+            }
+            else
+            {
+                this.label1.Text = $"Do you want to add the following game to the program?\n- {Game.Executable}";
+            }
         }
 
         private void YesButton_Click(object sender, EventArgs e)
         {
-            FileInfo info = new FileInfo(Game.Executable);
-            if (!SetCustomName || this.textBox1.Text == "")
+            if (SettingsManager.UseSteam && Game.IsSteamGame)
             {
-                Game.Name = info.Name.Replace(info.Extension, "");
+                Game.CreateUrlFile(SettingsManager.GamesFolderPath);
             }
             else
             {
-                Game.Name = this.textBox1.Text;
+                FileInfo info = new FileInfo(Game.Executable);
+                if (!SetCustomName || this.textBox1.Text == "")
+                {
+                    Game.Name = info.Name.Replace(info.Extension, "");
+                }
+                else
+                {
+                    Game.Name = this.textBox1.Text;
+                }
+                info.CreateShortcut(SettingsManager.GamesFolderPath, Game.Name, "Created by GamesManager");
             }
             SettingsManager.AddGame(Game);
-            info.CreateShortcut(SettingsManager.GamesFolderPath, Game.Name, "Created by GamesManager");
             Result = AddGameMessageBoxResult.Yes;
             this.Close();
         }
@@ -111,6 +137,13 @@ namespace GamesManager
         public static AddGameMessageBoxResult Show(string gamePath, bool setCustomName)
         {
             AddGameMessageBox box = new AddGameMessageBox(gamePath, setCustomName);
+            box.ShowDialog();
+            return box.Result;
+        }
+
+        public static AddGameMessageBoxResult Show(string steamGame)
+        {
+            AddGameMessageBox box = new AddGameMessageBox(steamGame);
             box.ShowDialog();
             return box.Result;
         }

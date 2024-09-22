@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -38,6 +39,8 @@ namespace GamesManager
             this.ignoreUnityCrashHandlerCheckBox.Checked = SettingsManager.IgnoreUnityCrashHandler;
             this.ignoreunins000CheckBox.Checked = SettingsManager.IgnoreUnins000;
             UpdateIgnoredFoldersUI();
+            this.steamCheckBox.Checked = SettingsManager.UseSteam;
+            this.steamIDTextBox.Text = SettingsManager.SteamID.ToString();
         }
 
         private void UpdateGamesSearchPathsUI()
@@ -142,6 +145,31 @@ namespace GamesManager
                 Properties.Settings.Default.gamesList = "";
                 Properties.Settings.Default.Save();
                 UpdateUI();
+            }
+        }
+
+        private void steamIDTextBox_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            Process.Start("explorer", "https://www.steamidfinder.com");
+        }
+
+        private void steamCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.label4.Enabled = steamCheckBox.Checked;
+            this.steamIDTextBox.Enabled = steamCheckBox.Checked;
+            SettingsManager.UseSteam = steamCheckBox.Checked;
+        }
+
+        private void steamIDTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!SettingsManager.IsSteamIDValid(steamIDTextBox.Text))
+            {
+                label5.Visible = true;
+            }
+            else
+            {
+                label5.Visible = false;
+                SettingsManager.SteamID = Convert.ToUInt64(steamIDTextBox.Text);
             }
         }
     }

@@ -69,5 +69,14 @@ namespace GamesManager.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to steam key.
+        /// </summary>
+        internal static string data {
+            get {
+                return ResourceManager.GetString("data", resourceCulture);
+            }
+        }
     }
 }
