@@ -144,6 +144,7 @@ namespace GamesManager
         {
             return AppList.FirstOrDefault(i => i.AppId == appId);
         }
+
         public static async Task<string> GetGameIconAsync(uint appId, string imgIconUrl)
         {
             var iconsFolder = Path.Combine(Application.LocalUserAppDataPath, "Icons");
@@ -154,6 +155,12 @@ namespace GamesManager
             // Construct the full URL to the icon
             string iconUrl = $"{steamGameIconPrefix}{appId}/{imgIconUrl}.jpg";
             string localFilePath = Path.Combine(Application.LocalUserAppDataPath, "Icons", $"{appId}.ico");
+
+            if (System.IO.File.Exists(localFilePath))
+            {
+                Console.WriteLine($"File already exists: {localFilePath}");
+                return localFilePath;
+            }
 
             if (client == null)
             {

@@ -63,7 +63,8 @@ namespace GamesManager
                 Properties.Settings.Default.gamesList = JsonConvert.SerializeObject(new List<Game>());
                 Properties.Settings.Default.Save();
             }
-            return JsonConvert.DeserializeObject<List<Game>>(Properties.Settings.Default.gamesList);
+            var gamesList = JsonConvert.DeserializeObject<List<Game>>(Properties.Settings.Default.gamesList).OrderBy(i => i.Name).ToList();
+            return gamesList;
         }
 
         public static void AddGame(Game value)
@@ -77,7 +78,14 @@ namespace GamesManager
         public static void RemoveGame(Game game)
         {
             var gamesList = GetGamesList();
-            gamesList.Remove(gamesList.Find(i => i.Executable == game.Executable));
+            if (UseSteam && game.IsSteamGame)
+            {
+                gamesList.Remove(gamesList.Find(i => i.AppID == game.AppID));
+            }
+            else
+            {
+                gamesList.Remove(gamesList.Find(i => i.Executable == game.Executable));
+            }
             Properties.Settings.Default.gamesList = JsonConvert.SerializeObject(gamesList);
             Properties.Settings.Default.Save();
         }

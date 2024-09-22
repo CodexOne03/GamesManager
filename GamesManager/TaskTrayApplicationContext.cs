@@ -53,6 +53,10 @@ namespace GamesManager
                     notifyIcon.Visible = true;
                 });
             }
+            else
+            {
+                notifyIcon.Visible = true;
+            }
         }
 
         void ShowConfig(object sender, EventArgs e)
@@ -109,10 +113,27 @@ namespace GamesManager
                     string target = info.GetUrlFromShortcut();
                     var substring = target.Substring(Utils.steamGameShortcutPrefix.Length);
                     var allGamesList = SettingsManager.GetGamesList();
-                    if (allGamesList.FirstOrDefault(i => i.IsSteamGame && (i.AppID.ToString() == substring)) == null)
+                    Game game = new Game("", uint.MinValue);
+                    foreach (var item in allGamesList)
+                    {
+                        if (item.IsSteamGame && item.AppID.ToString() == substring)
+                        {
+                            game = item;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    if (game.Name == "" && game.AppID == uint.MinValue)
                     {
                         AddToDeletionQueue(file);
                     }
+                    /*
+                    if (allGamesList.FirstOrDefault(i => i.IsSteamGame && (i.AppID.ToString() == substring)) == null)
+                    {
+                        AddToDeletionQueue(file);
+                    }*/
                 }
             }
             if (this.deletionQueue != null && this.deletionQueue.Count > 0)
@@ -244,7 +265,10 @@ namespace GamesManager
             // Otherwise it will be left behind until the user mouses over.
             notifyIcon.Visible = false;
 
-            Utils.client.Dispose();
+            if (Utils.client != null)
+            {
+                Utils.client.Dispose();
+            }
 
             Application.Exit();
         }
